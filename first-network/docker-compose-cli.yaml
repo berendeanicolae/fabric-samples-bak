@@ -19,9 +19,10 @@ networks:
 services:
   orderer.example.com:
     container_name: orderer.example.com
+    hostname: orderer.example.com
     image: hyperledger/fabric-orderer:$IMAGE_TAG
     environment:
-      - ORDERER_GENERAL_LOGLEVEL=INFO
+      - ORDERER_GENERAL_LOGLEVEL=DEBUG
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
@@ -42,10 +43,13 @@ services:
     ports:
       - 7050:7050
     networks:
-      - hyperledger-ov
+      hyperledger-ov:
+        aliases:
+            - orderer.example.com
 
   peer0.org1.example.com:
     container_name: peer0.org1.example.com
+    hostname: peer0.org1.example.com
     image: hyperledger/fabric-peer:$IMAGE_TAG
     environment:
         - CORE_PEER_ID=peer0.org1.example.com
@@ -58,8 +62,8 @@ services:
         # bridge network as the peers
         # https://docs.docker.com/compose/networking/
         - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger-ov
-        - CORE_LOGGING_LEVEL=INFO
-        #- CORE_LOGGING_LEVEL=DEBUG
+        # - CORE_LOGGING_LEVEL=INFO
+        - CORE_LOGGING_LEVEL=DEBUG
         - CORE_PEER_TLS_ENABLED=true
         - CORE_PEER_GOSSIP_USELEADERELECTION=true
         - CORE_PEER_GOSSIP_ORGLEADER=false
@@ -78,10 +82,13 @@ services:
         - 7051:7051
         - 7053:7053
     networks:
-        - hyperledger-ov
+      hyperledger-ov:
+        aliases:
+            - peer0.org1.example.com
 
   peer1.org1.example.com:
     container_name: peer1.org1.example.com
+    hostname: peer1.org1.example.com
     image: hyperledger/fabric-peer:$IMAGE_TAG
     environment:
         - CORE_PEER_ID=peer1.org1.example.com
@@ -94,8 +101,8 @@ services:
         # bridge network as the peers
         # https://docs.docker.com/compose/networking/
         - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger-ov
-        - CORE_LOGGING_LEVEL=INFO
-        #- CORE_LOGGING_LEVEL=DEBUG
+        # - CORE_LOGGING_LEVEL=INFO
+        - CORE_LOGGING_LEVEL=DEBUG
         - CORE_PEER_TLS_ENABLED=true
         - CORE_PEER_GOSSIP_USELEADERELECTION=true
         - CORE_PEER_GOSSIP_ORGLEADER=false
@@ -114,10 +121,13 @@ services:
         - 8051:7051
         - 8053:7053
     networks:
-        - hyperledger-ov
+      hyperledger-ov:
+        aliases:
+            - peer1.org1.example.com
 
   peer0.org2.example.com:
     container_name: peer0.org2.example.com
+    hostname: peer0.org2.example.com
     image: hyperledger/fabric-peer:$IMAGE_TAG
     environment:
         - CORE_PEER_ID=peer0.org2.example.com
@@ -130,8 +140,8 @@ services:
         # bridge network as the peers
         # https://docs.docker.com/compose/networking/
         - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger-ov
-        - CORE_LOGGING_LEVEL=INFO
-        #- CORE_LOGGING_LEVEL=DEBUG
+        # - CORE_LOGGING_LEVEL=INFO
+        - CORE_LOGGING_LEVEL=DEBUG
         - CORE_PEER_TLS_ENABLED=true
         - CORE_PEER_GOSSIP_USELEADERELECTION=true
         - CORE_PEER_GOSSIP_ORGLEADER=false
@@ -150,10 +160,13 @@ services:
         - 9051:7051
         - 9053:7053
     networks:
-        - hyperledger-ov
+      hyperledger-ov:
+        aliases:
+            - peer0.org2.example.com
 
   peer1.org2.example.com:
     container_name: peer1.org2.example.com
+    hostname: peer1.org2.example.com
     image: hyperledger/fabric-peer:$IMAGE_TAG
     environment:
         - CORE_PEER_ID=peer1.org2.example.com
@@ -166,8 +179,8 @@ services:
         # bridge network as the peers
         # https://docs.docker.com/compose/networking/
         - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger-ov
-        - CORE_LOGGING_LEVEL=INFO
-        #- CORE_LOGGING_LEVEL=DEBUG
+        # - CORE_LOGGING_LEVEL=INFO
+        - CORE_LOGGING_LEVEL=DEBUG
         - CORE_PEER_TLS_ENABLED=true
         - CORE_PEER_GOSSIP_USELEADERELECTION=true
         - CORE_PEER_GOSSIP_ORGLEADER=false
@@ -186,7 +199,9 @@ services:
         - 10051:7051
         - 10053:7053
     networks:
-        - hyperledger-ov
+      hyperledger-ov:
+        aliases:
+            - peer1.org2.example.com
 
   cli:
     container_name: cli
@@ -196,8 +211,8 @@ services:
     environment:
       - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      #- CORE_LOGGING_LEVEL=DEBUG
-      - CORE_LOGGING_LEVEL=INFO
+      - CORE_LOGGING_LEVEL=DEBUG
+      # - CORE_LOGGING_LEVEL=INFO
       - CORE_PEER_ID=cli
       - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
       - CORE_PEER_LOCALMSPID=Org1MSP
