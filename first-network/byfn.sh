@@ -156,14 +156,16 @@ function networkUp () {
   if [ "${IF_COUCHDB}" == "couchdb" ]; then
     IMAGE_TAG=$IMAGETAG docker-compose -f $COMPOSE_FILE -f $COMPOSE_FILE_COUCH up -d 2>&1
   else
-    IMAGE_TAG=$IMAGETAG docker-compose -f $COMPOSE_FILE up -d 2>&1
+    # IMAGE_TAG=$IMAGETAG docker-compose -f $COMPOSE_FILE up -d 2>&1
+    docker stack deploy -c $COMPOSE_FILE --with-registry-auth fabric 2>&1
   fi
   if [ $? -ne 0 ]; then
     echo "ERROR !!!! Unable to start network"
     exit 1
   fi
   # now run the end to end script
-  docker exec cli scripts/script.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT
+  # docker exec cli scripts/script.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT
+  # docker service logs --raw -f fabric_cli
   if [ $? -ne 0 ]; then
     echo "ERROR !!!! Test failed"
     exit 1
