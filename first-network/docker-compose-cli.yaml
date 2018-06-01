@@ -12,7 +12,6 @@ networks:
 
 services:
   orderer:
-    container_name: orderer.example.com
     hostname: orderer.example.com
     image: hyperledger/fabric-orderer:latest
     environment:
@@ -39,7 +38,6 @@ services:
             - orderer.example.com
 
   peer0_org1:
-    container_name: peer0.org1.example.com
     hostname: peer0.org1.example.com
     image: hyperledger/fabric-peer:latest
     environment:
@@ -74,7 +72,6 @@ services:
             - peer0.org1.example.com
 
   peer1_org1:
-    container_name: peer1.org1.example.com
     hostname: peer1.org1.example.com
     image: hyperledger/fabric-peer:latest
     environment:
@@ -109,7 +106,6 @@ services:
             - peer1.org1.example.com
 
   peer0_org2:
-    container_name: peer0.org2.example.com
     hostname: peer0.org2.example.com
     image: hyperledger/fabric-peer:latest
     environment:
@@ -144,7 +140,6 @@ services:
             - peer0.org2.example.com
 
   peer1_org2:
-    container_name: peer1.org2.example.com
     hostname: peer1.org2.example.com
     image: hyperledger/fabric-peer:latest
     environment:
@@ -179,7 +174,6 @@ services:
             - peer1.org2.example.com
 
   cli:
-    container_name: cli
     image: hyperledger/fabric-tools:latest
     environment:
       - GOPATH=/opt/gopath
