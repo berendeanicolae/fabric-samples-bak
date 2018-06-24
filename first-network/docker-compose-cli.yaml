@@ -15,7 +15,7 @@ services:
     hostname: orderer.example.com
     image: hyperledger/fabric-orderer:latest
     environment:
-      - ORDERER_GENERAL_LOGLEVEL=DEBUG
+      - ORDERER_GENERAL_LOGLEVEL=INFO
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
@@ -51,8 +51,8 @@ services:
         # bridge network as the peers
         # https://docs.docker.com/compose/networking/
         - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger-ov
-        # - CORE_LOGGING_LEVEL=INFO
-        - CORE_LOGGING_LEVEL=DEBUG
+        - CORE_LOGGING_LEVEL=INFO
+        # - CORE_LOGGING_LEVEL=DEBUG
         - CORE_PEER_TLS_ENABLED=true
         - CORE_PEER_GOSSIP_USELEADERELECTION=true
         - CORE_PEER_GOSSIP_ORGLEADER=false
@@ -85,8 +85,8 @@ services:
         # bridge network as the peers
         # https://docs.docker.com/compose/networking/
         - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger-ov
-        # - CORE_LOGGING_LEVEL=INFO
-        - CORE_LOGGING_LEVEL=DEBUG
+        - CORE_LOGGING_LEVEL=INFO
+        # - CORE_LOGGING_LEVEL=DEBUG
         - CORE_PEER_TLS_ENABLED=true
         - CORE_PEER_GOSSIP_USELEADERELECTION=true
         - CORE_PEER_GOSSIP_ORGLEADER=false
@@ -105,6 +105,278 @@ services:
         aliases:
             - peer1.org1.example.com
 
+  peer2_org1:
+    hostname: peer2.org1.example.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+        - CORE_PEER_ID=peer2.org1.example.com
+        - CORE_PEER_ADDRESS=peer2.org1.example.com:7051
+        - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer2.org1.example.com:7051
+        - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
+        - CORE_PEER_LOCALMSPID=Org1MSP
+        - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+        # the following setting starts chaincode containers on the same
+        # bridge network as the peers
+        # https://docs.docker.com/compose/networking/
+        - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger-ov
+        - CORE_LOGGING_LEVEL=INFO
+        # - CORE_LOGGING_LEVEL=DEBUG
+        - CORE_PEER_TLS_ENABLED=true
+        - CORE_PEER_GOSSIP_USELEADERELECTION=true
+        - CORE_PEER_GOSSIP_ORGLEADER=false
+        - CORE_PEER_PROFILE_ENABLED=true
+        - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+        - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+        - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer2.org1.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer2.org1.example.com/tls:/etc/hyperledger/fabric/tls
+    networks:
+      hyperledger-ov:
+        aliases:
+            - peer2.org1.example.com
+
+  peer3_org1:
+    hostname: peer3.org1.example.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+        - CORE_PEER_ID=peer3.org1.example.com
+        - CORE_PEER_ADDRESS=peer3.org1.example.com:7051
+        - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer3.org1.example.com:7051
+        - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
+        - CORE_PEER_LOCALMSPID=Org1MSP
+        - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+        # the following setting starts chaincode containers on the same
+        # bridge network as the peers
+        # https://docs.docker.com/compose/networking/
+        - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger-ov
+        - CORE_LOGGING_LEVEL=INFO
+        # - CORE_LOGGING_LEVEL=DEBUG
+        - CORE_PEER_TLS_ENABLED=true
+        - CORE_PEER_GOSSIP_USELEADERELECTION=true
+        - CORE_PEER_GOSSIP_ORGLEADER=false
+        - CORE_PEER_PROFILE_ENABLED=true
+        - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+        - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+        - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer3.org1.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer3.org1.example.com/tls:/etc/hyperledger/fabric/tls
+    networks:
+      hyperledger-ov:
+        aliases:
+            - peer3.org1.example.com
+
+  peer4_org1:
+    hostname: peer4.org1.example.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+        - CORE_PEER_ID=peer4.org1.example.com
+        - CORE_PEER_ADDRESS=peer4.org1.example.com:7051
+        - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer4.org1.example.com:7051
+        - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
+        - CORE_PEER_LOCALMSPID=Org1MSP
+        - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+        # the following setting starts chaincode containers on the same
+        # bridge network as the peers
+        # https://docs.docker.com/compose/networking/
+        - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger-ov
+        - CORE_LOGGING_LEVEL=INFO
+        # - CORE_LOGGING_LEVEL=DEBUG
+        - CORE_PEER_TLS_ENABLED=true
+        - CORE_PEER_GOSSIP_USELEADERELECTION=true
+        - CORE_PEER_GOSSIP_ORGLEADER=false
+        - CORE_PEER_PROFILE_ENABLED=true
+        - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+        - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+        - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer4.org1.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer4.org1.example.com/tls:/etc/hyperledger/fabric/tls
+    networks:
+      hyperledger-ov:
+        aliases:
+            - peer4.org1.example.com
+
+  peer5_org1:
+    hostname: peer5.org1.example.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+        - CORE_PEER_ID=peer5.org1.example.com
+        - CORE_PEER_ADDRESS=peer5.org1.example.com:7051
+        - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer5.org1.example.com:7051
+        - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
+        - CORE_PEER_LOCALMSPID=Org1MSP
+        - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+        # the following setting starts chaincode containers on the same
+        # bridge network as the peers
+        # https://docs.docker.com/compose/networking/
+        - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger-ov
+        - CORE_LOGGING_LEVEL=INFO
+        # - CORE_LOGGING_LEVEL=DEBUG
+        - CORE_PEER_TLS_ENABLED=true
+        - CORE_PEER_GOSSIP_USELEADERELECTION=true
+        - CORE_PEER_GOSSIP_ORGLEADER=false
+        - CORE_PEER_PROFILE_ENABLED=true
+        - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+        - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+        - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer5.org1.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer5.org1.example.com/tls:/etc/hyperledger/fabric/tls
+    networks:
+      hyperledger-ov:
+        aliases:
+            - peer5.org1.example.com
+
+  peer6_org1:
+    hostname: peer6.org1.example.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+        - CORE_PEER_ID=peer6.org1.example.com
+        - CORE_PEER_ADDRESS=peer6.org1.example.com:7051
+        - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer6.org1.example.com:7051
+        - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
+        - CORE_PEER_LOCALMSPID=Org1MSP
+        - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+        # the following setting starts chaincode containers on the same
+        # bridge network as the peers
+        # https://docs.docker.com/compose/networking/
+        - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger-ov
+        - CORE_LOGGING_LEVEL=INFO
+        # - CORE_LOGGING_LEVEL=DEBUG
+        - CORE_PEER_TLS_ENABLED=true
+        - CORE_PEER_GOSSIP_USELEADERELECTION=true
+        - CORE_PEER_GOSSIP_ORGLEADER=false
+        - CORE_PEER_PROFILE_ENABLED=true
+        - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+        - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+        - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer6.org1.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer6.org1.example.com/tls:/etc/hyperledger/fabric/tls
+    networks:
+      hyperledger-ov:
+        aliases:
+            - peer6.org1.example.com
+
+  peer7_org1:
+    hostname: peer7.org1.example.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+        - CORE_PEER_ID=peer7.org1.example.com
+        - CORE_PEER_ADDRESS=peer7.org1.example.com:7051
+        - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer7.org1.example.com:7051
+        - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
+        - CORE_PEER_LOCALMSPID=Org1MSP
+        - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+        # the following setting starts chaincode containers on the same
+        # bridge network as the peers
+        # https://docs.docker.com/compose/networking/
+        - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger-ov
+        - CORE_LOGGING_LEVEL=INFO
+        # - CORE_LOGGING_LEVEL=DEBUG
+        - CORE_PEER_TLS_ENABLED=true
+        - CORE_PEER_GOSSIP_USELEADERELECTION=true
+        - CORE_PEER_GOSSIP_ORGLEADER=false
+        - CORE_PEER_PROFILE_ENABLED=true
+        - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+        - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+        - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer7.org1.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer7.org1.example.com/tls:/etc/hyperledger/fabric/tls
+    networks:
+      hyperledger-ov:
+        aliases:
+            - peer7.org1.example.com
+
+  peer8_org1:
+    hostname: peer8.org1.example.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+        - CORE_PEER_ID=peer8.org1.example.com
+        - CORE_PEER_ADDRESS=peer8.org1.example.com:7051
+        - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer8.org1.example.com:7051
+        - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
+        - CORE_PEER_LOCALMSPID=Org1MSP
+        - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+        # the following setting starts chaincode containers on the same
+        # bridge network as the peers
+        # https://docs.docker.com/compose/networking/
+        - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger-ov
+        - CORE_LOGGING_LEVEL=INFO
+        # - CORE_LOGGING_LEVEL=DEBUG
+        - CORE_PEER_TLS_ENABLED=true
+        - CORE_PEER_GOSSIP_USELEADERELECTION=true
+        - CORE_PEER_GOSSIP_ORGLEADER=false
+        - CORE_PEER_PROFILE_ENABLED=true
+        - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+        - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+        - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer8.org1.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer8.org1.example.com/tls:/etc/hyperledger/fabric/tls
+    networks:
+      hyperledger-ov:
+        aliases:
+            - peer8.org1.example.com
+
+  peer9_org1:
+    hostname: peer9.org1.example.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+        - CORE_PEER_ID=peer9.org1.example.com
+        - CORE_PEER_ADDRESS=peer9.org1.example.com:7051
+        - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer9.org1.example.com:7051
+        - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
+        - CORE_PEER_LOCALMSPID=Org1MSP
+        - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+        # the following setting starts chaincode containers on the same
+        # bridge network as the peers
+        # https://docs.docker.com/compose/networking/
+        - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger-ov
+        - CORE_LOGGING_LEVEL=INFO
+        # - CORE_LOGGING_LEVEL=DEBUG
+        - CORE_PEER_TLS_ENABLED=true
+        - CORE_PEER_GOSSIP_USELEADERELECTION=true
+        - CORE_PEER_GOSSIP_ORGLEADER=false
+        - CORE_PEER_PROFILE_ENABLED=true
+        - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+        - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+        - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer9.org1.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer9.org1.example.com/tls:/etc/hyperledger/fabric/tls
+    networks:
+      hyperledger-ov:
+        aliases:
+            - peer9.org1.example.com
+
   peer0_org2:
     hostname: peer0.org2.example.com
     image: hyperledger/fabric-peer:latest
@@ -119,8 +391,8 @@ services:
         # bridge network as the peers
         # https://docs.docker.com/compose/networking/
         - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger-ov
-        # - CORE_LOGGING_LEVEL=INFO
-        - CORE_LOGGING_LEVEL=DEBUG
+        - CORE_LOGGING_LEVEL=INFO
+        # - CORE_LOGGING_LEVEL=DEBUG
         - CORE_PEER_TLS_ENABLED=true
         - CORE_PEER_GOSSIP_USELEADERELECTION=true
         - CORE_PEER_GOSSIP_ORGLEADER=false
@@ -153,8 +425,8 @@ services:
         # bridge network as the peers
         # https://docs.docker.com/compose/networking/
         - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger-ov
-        # - CORE_LOGGING_LEVEL=INFO
-        - CORE_LOGGING_LEVEL=DEBUG
+        - CORE_LOGGING_LEVEL=INFO
+        # - CORE_LOGGING_LEVEL=DEBUG
         - CORE_PEER_TLS_ENABLED=true
         - CORE_PEER_GOSSIP_USELEADERELECTION=true
         - CORE_PEER_GOSSIP_ORGLEADER=false
@@ -189,7 +461,7 @@ services:
       - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
-    command: sleep 3600
+    command: sleep 1d
     volumes:
         - /var/run/:/host/var/run/
         - ./../chaincode/:/opt/gopath/src/github.com/chaincode
