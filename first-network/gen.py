@@ -33,7 +33,7 @@ PeerOrgs:
     Users:
       Count: 1
   '''.format(peer_count)
-fHandle = open("crypto-config_2.yaml", "w")
+fHandle = open("crypto-config.yaml", "w")
 fHandle.write(template)
 fHandle.close()
 
@@ -78,7 +78,6 @@ peer_template = '''
       hyperledger-ov:
         aliases:
             - peer{cnt}.org1.example.com
-
 '''
 template = '''
 version: '3'
@@ -248,6 +247,6 @@ services:
 
 '''
 peers = "\n".join([peer_template.format(cnt=i) for i in range(1, peer_count)])
-fHandle = open("docker-compose-cli_2.yaml", "w")
+fHandle = open("docker-compose-cli.yaml", "w")
 fHandle.write(template.format(peers))
 fHandle.close()
