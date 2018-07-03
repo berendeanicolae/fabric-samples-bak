@@ -262,5 +262,5 @@ if os.path.isdir("/export"):
     copy_tree("./scripts", "/export/scripts")
     copy_tree("./crypto-config", "/export/crypto-config")
     copy_tree("./channel-artifacts", "/export/channel-artifacts")
-    copy_tree("./../crypto-config", "/export/chaincode")
+    copy_tree("./../chaincode", "/export/chaincode")
 
