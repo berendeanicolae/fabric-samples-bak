@@ -1,5 +1,6 @@
 import sys
 import os
+import shutil
 import subprocess
 
 
@@ -9,6 +10,11 @@ if len(sys.argv) != 2:
 
 
 peer_count = int(sys.argv[1])
+
+def copy_tree(src, dst):
+    if os.path.isdir(dst): shutil.rmtree(dst)
+    shutil.copytree(src, dst)
+
 
 # generate crypto-config.yaml
 template = '''
@@ -250,3 +256,11 @@ peers = "\n".join([peer_template.format(cnt=i) for i in range(1, peer_count)])
 fHandle = open("docker-compose-cli.yaml", "w")
 fHandle.write(template.format(peers))
 fHandle.close()
+
+
+if os.path.isdir("/export"):
+    copytree("./scripts", "/export/scripts")
+    copytree("./crypto-config", "/export/crypto-config")
+    copytree("./channel-artifacts", "/export/channel-artifacts")
+    copytree("./../crypto-config", "/export/chaincode")
+
