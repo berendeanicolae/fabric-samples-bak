@@ -259,8 +259,8 @@ fHandle.close()
 
 
 if os.path.isdir("/export"):
-    copytree("./scripts", "/export/scripts")
-    copytree("./crypto-config", "/export/crypto-config")
-    copytree("./channel-artifacts", "/export/channel-artifacts")
-    copytree("./../crypto-config", "/export/chaincode")
+    copy_tree("./scripts", "/export/scripts")
+    copy_tree("./crypto-config", "/export/crypto-config")
+    copy_tree("./channel-artifacts", "/export/channel-artifacts")
+    copy_tree("./../crypto-config", "/export/chaincode")
 
