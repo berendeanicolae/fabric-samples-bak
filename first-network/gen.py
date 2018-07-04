@@ -264,5 +264,5 @@ if os.path.isdir("/export"):
     copy_tree("./channel-artifacts", "/export/channel-artifacts")
     copy_tree("./../chaincode", "/export/chaincode")
     
-    subprocess.Popen(["chmod -R 777 /shared/*"]).wait()
+    subprocess.Popen(["chmod -R 777 /shared"], shell=True).wait()
 
