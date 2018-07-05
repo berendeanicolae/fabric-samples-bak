@@ -4,12 +4,21 @@ import shutil
 import subprocess
 
 
-if len(sys.argv) != 2:
-    print("Usage: {} <peer_count>".format(os.path.basename(__file__)))
+if len(sys.argv) < 2:
+    print("Usage: {} <peer_count> [logging]".format(os.path.basename(__file__)))
     raise SystemExit
 
 
 peer_count = int(sys.argv[1])
+logging = "INFO"
+if len(sys.argv) == 3:
+    if sys.argv[2].upper()=="DEBUG":
+        logging = "DEBUG"
+    elif sys.argv[2].upper()=="INFO":
+        logging = "INFO"
+    else:
+        print("logging level should be DEBUG or INFO")
+        raise SystemExit
 
 def copy_tree(src, dst):
     if os.path.isdir(dst): shutil.rmtree(dst)
@@ -65,8 +74,7 @@ peer_template = '''
         # bridge network as the peers
         # https://docs.docker.com/compose/networking/
         - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger-ov
-        - CORE_LOGGING_LEVEL=INFO
-        # - CORE_LOGGING_LEVEL=DEBUG
+        - CORE_LOGGING_LEVEL={log}
         - CORE_PEER_TLS_ENABLED=true
         - CORE_PEER_GOSSIP_USELEADERELECTION=true
         - CORE_PEER_GOSSIP_ORGLEADER=false
@@ -97,7 +105,7 @@ services:
     hostname: orderer.example.com
     image: hyperledger/fabric-orderer:latest
     environment:
-      - ORDERER_GENERAL_LOGLEVEL=INFO
+      - ORDERER_GENERAL_LOGLEVEL={log}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
@@ -133,8 +141,7 @@ services:
         # bridge network as the peers
         # https://docs.docker.com/compose/networking/
         - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger-ov
-        - CORE_LOGGING_LEVEL=INFO
-        # - CORE_LOGGING_LEVEL=DEBUG
+        - CORE_LOGGING_LEVEL={log}
         - CORE_PEER_TLS_ENABLED=true
         - CORE_PEER_GOSSIP_USELEADERELECTION=true
         - CORE_PEER_GOSSIP_ORGLEADER=false
@@ -153,7 +160,7 @@ services:
         aliases:
             - peer0.org1.example.com
 
-{}
+{peers}
 
   peer0_org2:
     hostname: peer0.org2.example.com
@@ -169,8 +176,7 @@ services:
         # bridge network as the peers
         # https://docs.docker.com/compose/networking/
         - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger-ov
-        - CORE_LOGGING_LEVEL=INFO
-        # - CORE_LOGGING_LEVEL=DEBUG
+        - CORE_LOGGING_LEVEL={log}
         - CORE_PEER_TLS_ENABLED=true
         - CORE_PEER_GOSSIP_USELEADERELECTION=true
         - CORE_PEER_GOSSIP_ORGLEADER=false
@@ -203,8 +209,7 @@ services:
         # bridge network as the peers
         # https://docs.docker.com/compose/networking/
         - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger-ov
-        - CORE_LOGGING_LEVEL=INFO
-        # - CORE_LOGGING_LEVEL=DEBUG
+        - CORE_LOGGING_LEVEL={log}
         - CORE_PEER_TLS_ENABLED=true
         - CORE_PEER_GOSSIP_USELEADERELECTION=true
         - CORE_PEER_GOSSIP_ORGLEADER=false
@@ -228,8 +233,7 @@ services:
     environment:
       - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - CORE_LOGGING_LEVEL=DEBUG
-      # - CORE_LOGGING_LEVEL=INFO
+      - CORE_LOGGING_LEVEL={log}
       - CORE_PEER_ID=cli
       - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
       - CORE_PEER_LOCALMSPID=Org1MSP
@@ -252,9 +256,9 @@ services:
             - cli
 
 '''
-peers = "\n".join([peer_template.format(cnt=i) for i in range(1, peer_count)])
+peers = "\n".join([peer_template.format(cnt=i, log=logging) for i in range(1, peer_count)])
 fHandle = open("docker-compose-cli.yaml", "w")
-fHandle.write(template.format(peers))
+fHandle.write(template.format(peers=peers, log=logging))
 fHandle.close()
 
 
