@@ -11,28 +11,39 @@ if len(sys.argv)!= 2:
 
 srvcName = sys.argv[1]
 
-def getContainerId(service):
+def getContainerPid(service):
 	# node ID
-	p = subprocess.Popen(["docker service ps --format '{{{{.Node}}}}' --no-resolve {srvc}".format(srvc=service)], shell=True, stdout=subprocess.PIPE)
-	srvc_id, _ = p.communicate()
+    cmd = "docker service ps -f '{{{{.Node}}}}' --no-resolve {srvc}".format(srvc=service)
+	p = subprocess.Popen([cmd], shell=True, stdout=subprocess.PIPE)
+	srvcId, _ = p.communicate()
 
 	# node IP
-	p = subprocess.Popen(["docker node inspect --format '{{{{.Status.Addr}}}}' {srvc}".format(srvc=srvc_id.strip())], shell=True, stdout=subprocess.PIPE)
-	srvc_ip, _ = p.communicate()
+    cmd = "docker node inspect -f '{{{{.Status.Addr}}}}' {srvc}".format(srvc=srvcId.strip())
+	p = subprocess.Popen([cmd], shell=True, stdout=subprocess.PIPE)
+	srvcIp, _ = p.communicate()
 
 	# container ID
-	p = subprocess.Popen(["ssh ubuntu@{ip} \"docker container ls --format '{{{{.ID}}}} {{{{.Names}}}}'\" | grep {srvc}".format(ip=srvc_ip.strip(), srvc=service)], shell=True, stdout=subprocess.PIPE)
+    cmd = "ssh ubuntu@{ip} \"docker container ls -f '{{{{.ID}}}} {{{{.Names}}}}'\" | grep {srvc}".format(ip=srvcIp.strip(), srvc=service)
+	p = subprocess.Popen([cmd], shell=True, stdout=subprocess.PIPE)
 	cnts, _ = p.communicate()
-
 	cnts = cnts.strip()
 	cntId, _ = cnts.split()
 
-	return cntId
+    # container PID
+    cmd = "ssh ubuntu@{ip} \"docker inspect -f {{{{.State.Pid}}}} {cnt}\"".format(cnt=cntId)
+    p = subprocess.Popen([cmd], shell=True, stdout=subprocess.PIPE)
+    cntPid, _ = p.communicate()
 
-def getStats(srvcIp, cntId):
+	return srvcIp, cntPid
+
+def getStats(srvcIp, cntPid):
 	while True:
-		p = subprocess.Popen()
-		p.communicate()
+        cmd = "ssh ubuntu@{ip} \"cat /proc/{cnt}/net/dev\"".format(ip=srvcIp, cnt=cndPid)
+		p = subprocess.Popen([cmd], shell=True, stdout=subprocess.PIPE)
+		netIo, _ = p.communicate()
 
-cntId = getContainerId(srvcName)
+        print(netIo)
+
+srvcIp, cntPid = getContainerPid(srvcName)
+
 
