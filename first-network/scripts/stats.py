@@ -9,6 +9,9 @@ if len(sys.argv)!= 2:
 	raise SystemExit
 
 
+sys.stdout = os.fdopen(sys.stdout.fileno(), "wb", 0)
+sys.stderr = os.fdopen(sys.stderr.fileno(), "wb", 0)
+
 srvcName = sys.argv[1]
 
 def getContainerPid(service):
@@ -37,6 +40,7 @@ def getContainerPid(service):
 	return srvcIp.strip(), cntPid.strip()
 
 def getStats(srvcIp, cntPid):
+	idx = 0
 	while True:
 		cmd = "ssh ubuntu@{ip} \"cat /proc/{cnt}/net/dev\"".format(ip=srvcIp, cnt=cntPid)
 		p = subprocess.Popen([cmd], shell=True, stdout=subprocess.PIPE)
@@ -44,13 +48,14 @@ def getStats(srvcIp, cntPid):
 
 		netIn = 0
 		netOut = 0
+		idx += 1
 		for net in netIo.splitlines()[2:]:
 			net = net.strip()
 			if len(net) == 0: continue
 
 			netIn += int(net.split()[1])
 			netOut += int(net.split()[9])
-		print("{}\t{}".format(netIn, netOut))
+		print("#{}: {}\t{}".format(idx, netIn, netOut))
 		time.sleep(10)
 
 srvcIp, cntPid = getContainerPid(srvcName)
