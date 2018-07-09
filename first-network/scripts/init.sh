@@ -12,12 +12,12 @@ createChannel() {
 
 joinChannel() {
     for peer in 0 1; do
-        setGlobals $PEER 2
+        setGlobals $peer 2
 		peer channel join -b $CHANNEL_NAME.block
     done
 
     for peer in 0 100; do
-        setGlobals $PEER 1
+        setGlobals $peer 1
 		peer channel join -b $CHANNEL_NAME.block
     done
 }
@@ -25,7 +25,7 @@ joinChannel() {
 
 updateAnchorPeers() {
     for org in 1 2; do
-        setGlobals 0 $ORG
+        setGlobals 0 $org
         peer channel update -o orderer.example.com:7050 -c $CHANNEL_NAME -f ./channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA >&log.txt
     done
 }
@@ -33,12 +33,12 @@ updateAnchorPeers() {
 
 installChaincode() {
     for peer in 0 1; do
-        setGlobals $PEER 2
+        setGlobals $peer 2
 		peer chaincode install -n mycc -v 1.0 -p github.com/chaincode/chaincode_example02/go/
     done
 
     for peer in 0 100; do
-        setGlobals $PEER 1
+        setGlobals $peer 1
 		peer chaincode install -n mycc -v 1.0 -p github.com/chaincode/chaincode_example02/go/
     done
 }
