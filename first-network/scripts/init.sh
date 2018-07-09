@@ -16,7 +16,7 @@ joinChannel() {
 		peer channel join -b $CHANNEL_NAME.block
     done
 
-    for peer in 0 100; do
+    for peer in $(seq 0 99); do
         setGlobals $peer 1
 		peer channel join -b $CHANNEL_NAME.block
     done
@@ -37,7 +37,7 @@ installChaincode() {
 		peer chaincode install -n mycc -v 1.0 -p github.com/chaincode/chaincode_example02/go/
     done
 
-    for peer in 0 100; do
+    for peer in $(seq 0 99); do
         setGlobals $peer 1
 		peer chaincode install -n mycc -v 1.0 -p github.com/chaincode/chaincode_example02/go/
     done
