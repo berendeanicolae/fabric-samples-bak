@@ -47,3 +47,31 @@ instantiateChaincode() {
     setGlobals 0 1
     peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l node -v 1.0 -c '{"Args":["init","a", "100", "b","200"]}' -P "AND ('Org1MSP.peer','Org2MSP.peer')"
 }
+
+chaincodeQuery() {
+    peer=0
+    org=1
+    if [ $# -eq 1 ]; then
+        peer=$1
+    elif [ $# -ge 2 ]; then
+        peer=$1
+        org=$2
+    fi
+    setGlobals $peer $org
+
+    peer chaincode query -C $CHANNEL_NAME -n mycc -c '{"Args":["query","a"]}'
+}
+
+chaincodeInvoke() {
+    peer=0
+    org=1
+    if [ $# -eq 1 ]; then
+        peer=$1
+    elif [ $# -ge 2 ]; then
+        peer=$1
+        org=$2
+    fi
+    setGlobals $peer $org
+
+    peer chaincode invoke -o orderer.example.com:7050  --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -c '{"Args":["invoke","a","b","10"]}'
+}
